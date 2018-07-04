@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">My Contract</string>
+    <string name="deal_sample">Deal</string>
+    <string name="done_button">Done</string>
+    <string name="add_deal_button">Add Deal</string>
 </resources>
