@@ -5,7 +5,7 @@
         <import type="android.view.View"/>
         <variable
             name="item"
-            type="com.konh.mycontract.model.TodayDealModel" />
+            type="com.konh.mycontract.model.DateDealModel" />
     </data>
 
     <LinearLayout

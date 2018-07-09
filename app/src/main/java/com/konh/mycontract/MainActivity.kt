@@ -12,11 +12,13 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Toast
-import com.konh.mycontract.adapter.TodayDealAdapter
+import com.konh.mycontract.adapter.DateDealAdapter
 import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.HistoryModel
-import com.konh.mycontract.model.TodayDealModel
+import com.konh.mycontract.model.DateDealModel
+import com.konh.mycontract.repository.DateDealRepository
+import com.konh.mycontract.repository.RepositoryManager
 import com.konh.mycontract.utils.WorkerThread
 import java.util.*
 
@@ -25,9 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     private var workerThread: WorkerThread? = null
 
-    private var dealAdapter : TodayDealAdapter? = null
+    private var dealAdapter : DateDealAdapter? = null
 
-    private var db: DealDatabase? = null
+    private var repository:RepositoryManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +38,12 @@ class MainActivity : AppCompatActivity() {
         workerThread = WorkerThread("dbThread")
         workerThread?.start()
 
-        db = DealDatabase.getInstance(this)
-
-        dealAdapter = TodayDealAdapter(applicationContext, emptyList(), { doneDeal(it) })
+        dealAdapter = DateDealAdapter(applicationContext, emptyList(), { doneDeal(it) })
 
         val dealListView = findViewById<ListView>(R.id.list_deals)
         dealListView?.adapter = dealAdapter
 
-        updateTodayDeals()
+        initRepository()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -93,20 +93,20 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, HistoryActivity::class.java))
     }
 
+    private fun initRepository() {
+        val db = DealDatabase.getInstance(this)
+        if ( db != null ) {
+            repository = RepositoryManager(db)
+            updateTodayDeals()
+        }
+    }
+
     private fun updateTodayDeals() {
         workerThread?.postTask(Runnable {
-            val allDeals = db?.dealDao()?.getAll()
-            val history = db?.historyDao()?.getAll()
-            if ( (allDeals != null) && (history != null) ) {
-                Log.d(logTag, "updateTodayDeals: deals: ${allDeals.size}, history: ${history.size}")
-                allDeals.forEach { Log.d(logTag, "updateTodayDeals: deal: $it") }
-                history.forEach { Log.d(logTag, "updateTodayDeals: history: $it") }
-                val todayDeals = allDeals
-                        .filter { d -> !history.any { h -> h.dealId == d.id } }
-                        .map { it -> TodayDealModel(it.id, it.name, it.score, true) }.toMutableList()
-                todayDeals.addAll(history.map { it -> TodayDealModel(it.dealId, it.name, it.score, false) })
-                runOnUiThread {
-                    dealAdapter?.updateItems(todayDeals)
+            val dateDeals = repository?.dateDeal?.getAll()
+            runOnUiThread {
+                if ( dateDeals != null ) {
+                    dealAdapter?.updateItems(dateDeals)
                 }
             }
         })
@@ -114,24 +114,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDeal(deal:DealModel) {
         workerThread?.postTask(Runnable {
-            val dao = db?.dealDao()
-            if ( dao != null ) {
-                Log.d(logTag, "addDeal: $deal items")
-                dao.insert(deal)
-                updateTodayDeals()
-            }
+            repository?.deal?.addDeal(deal)
+            updateTodayDeals()
         })
     }
 
-    private fun doneDeal(deal:TodayDealModel) {
+    private fun doneDeal(deal:DateDealModel) {
         workerThread?.postTask(Runnable {
-            val dao = db?.historyDao()
-            if ( dao != null ) {
-                Log.d(logTag, "doneDeal: $deal")
-                val it = HistoryModel(0, Calendar.getInstance().time, deal.dealId, deal.name, deal.score)
-                dao.insert(it)
-                updateTodayDeals()
-            }
+            repository?.dateDeal?.doneDeal(deal)
+            updateTodayDeals()
         })
     }
 }
