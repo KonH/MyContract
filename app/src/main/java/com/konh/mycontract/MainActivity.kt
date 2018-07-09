@@ -12,20 +12,22 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Toast
-import com.konh.mycontract.adapter.DealAdapter
+import com.konh.mycontract.adapter.TodayDealAdapter
 import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.model.DealModel
+import com.konh.mycontract.model.HistoryModel
+import com.konh.mycontract.model.TodayDealModel
 import com.konh.mycontract.utils.WorkerThread
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val logTag = "MainActivity"
 
     private var workerThread: WorkerThread? = null
 
-    private  var dealListView : ListView? = null
+    private var dealAdapter : TodayDealAdapter? = null
 
     private var db: DealDatabase? = null
-    private val deals = mutableListOf<DealModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,39 +38,12 @@ class MainActivity : AppCompatActivity() {
 
         db = DealDatabase.getInstance(this)
 
-        val dealAdapter = DealAdapter(applicationContext)
-        dealAdapter.items = deals
+        dealAdapter = TodayDealAdapter(applicationContext, emptyList(), { doneDeal(it) })
 
-        dealListView = findViewById<ListView>(R.id.list_deals)
+        val dealListView = findViewById<ListView>(R.id.list_deals)
         dealListView?.adapter = dealAdapter
 
-        loadDeals()
-    }
-
-    private fun loadDeals() {
-        val task = Runnable {
-            val dbDeals = db?.dealDao()?.getAll()
-            if (dbDeals != null ) {
-                Log.d(logTag, "loadDeals: ${dbDeals.size} items")
-                dbDeals.forEach { Log.d(logTag, "loadDeals: $it") }
-                deals.clear()
-                deals.addAll(dbDeals)
-            }
-        }
-        workerThread?.postTask(task)
-    }
-
-    private fun addDeal(deal: DealModel) {
-        deals.add(deal)
-        saveDeal(deal)
-    }
-
-    private fun saveDeal(deal: DealModel) {
-        val task = Runnable {
-            Log.d(logTag, "saveDeal: $deal")
-            db?.dealDao()?.insert(deal)
-        }
-        workerThread?.postTask(task)
+        updateTodayDeals()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -116,5 +91,47 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToHistory() {
         startActivity(Intent(this, HistoryActivity::class.java))
+    }
+
+    private fun updateTodayDeals() {
+        workerThread?.postTask(Runnable {
+            val allDeals = db?.dealDao()?.getAll()
+            val history = db?.historyDao()?.getAll()
+            if ( (allDeals != null) && (history != null) ) {
+                Log.d(logTag, "updateTodayDeals: deals: ${allDeals.size}, history: ${history.size}")
+                allDeals.forEach { Log.d(logTag, "updateTodayDeals: deal: $it") }
+                history.forEach { Log.d(logTag, "updateTodayDeals: history: $it") }
+                val todayDeals = allDeals
+                        .filter { d -> !history.any { h -> h.dealId == d.id } }
+                        .map { it -> TodayDealModel(it.id, it.name, it.score, true) }.toMutableList()
+                todayDeals.addAll(history.map { it -> TodayDealModel(it.dealId, it.name, it.score, false) })
+                runOnUiThread {
+                    dealAdapter?.updateItems(todayDeals)
+                }
+            }
+        })
+    }
+
+    private fun addDeal(deal:DealModel) {
+        workerThread?.postTask(Runnable {
+            val dao = db?.dealDao()
+            if ( dao != null ) {
+                Log.d(logTag, "addDeal: $deal items")
+                dao.insert(deal)
+                updateTodayDeals()
+            }
+        })
+    }
+
+    private fun doneDeal(deal:TodayDealModel) {
+        workerThread?.postTask(Runnable {
+            val dao = db?.historyDao()
+            if ( dao != null ) {
+                Log.d(logTag, "doneDeal: $deal")
+                val it = HistoryModel(0, Calendar.getInstance().time, deal.dealId, deal.name, deal.score)
+                dao.insert(it)
+                updateTodayDeals()
+            }
+        })
     }
 }

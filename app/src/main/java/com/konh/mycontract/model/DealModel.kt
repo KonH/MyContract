@@ -8,5 +8,5 @@ import android.arch.persistence.room.PrimaryKey
 data class DealModel(
         @PrimaryKey(autoGenerate = true) val id:Int,
         @ColumnInfo(name = "name") val name:String,
-        @ColumnInfo(name = "price") val price:Int
+        @ColumnInfo(name = "score") val score:Int
 )

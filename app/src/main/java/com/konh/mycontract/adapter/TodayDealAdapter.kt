@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.konh.mycontract.databinding.ItemDealBinding
-import com.konh.mycontract.model.DealModel
+import com.konh.mycontract.model.TodayDealModel
 
-class DealAdapter(private val context: Context) : BaseAdapter() {
-    var items: List<DealModel> = emptyList()
+class TodayDealAdapter(private val context: Context, private var items:List<TodayDealModel>, private val doneHandler:(TodayDealModel)->Unit) : BaseAdapter() {
 
     override fun getCount(): Int = items.size
 
@@ -25,8 +24,16 @@ class DealAdapter(private val context: Context) : BaseAdapter() {
         } else {
             binding = convertView.tag as ItemDealBinding
         }
-        binding.item = getItem(position) as DealModel
-
+        val item = getItem(position) as TodayDealModel
+        binding.item = item
+        binding.dealDone.setOnClickListener {
+            doneHandler.invoke(item)
+        }
         return binding.root
+    }
+
+    fun updateItems(items:List<TodayDealModel>) {
+        this.items = items
+        notifyDataSetChanged()
     }
 }
