@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     val newDealText = editText.text.toString()
                     val message = "New deal: '$newDealText'"
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    val newDeal = DealModel(0, newDealText)
+                    val newDeal = DealModel(0, newDealText, 10 )
                     addDeal(newDeal)
                 })
                 .setNegativeButton("Cancel", null)
