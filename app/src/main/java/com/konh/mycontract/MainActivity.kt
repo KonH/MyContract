@@ -4,10 +4,12 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.InputType
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Toast
 import com.konh.mycontract.adapter.DealAdapter
@@ -84,18 +86,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCreatingDeal() {
-        val editText = EditText(this)
+        val layout = LinearLayout(this)
+        val nameEditText = EditText(this)
+        nameEditText.hint = getString(R.string.add_deal_hint_title)
+        val priceEditText = EditText(this)
+        priceEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        priceEditText.hint = getString(R.string.add_deal_hint_price)
+        layout.addView(nameEditText)
+        layout.addView(priceEditText)
         val dialog = AlertDialog.Builder(this)
-                .setTitle("Add new deal:")
-                .setView(editText)
-                .setPositiveButton("Add", {_, _ ->
-                    val newDealText = editText.text.toString()
+                .setTitle(getString(R.string.add_deal_header))
+                .setView(layout)
+                .setPositiveButton(getString(R.string.add_deal_ok_button), { _, _ ->
+                    val newDealText = nameEditText.text.toString()
+                    val newDealPrice = priceEditText.text.toString().toInt()
                     val message = "New deal: '$newDealText'"
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    val newDeal = DealModel(0, newDealText, 10 )
+                    val newDeal = DealModel(0, newDealText, newDealPrice )
                     addDeal(newDeal)
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.add_deal_cancel_button), null)
                 .create()
         dialog.show()
     }

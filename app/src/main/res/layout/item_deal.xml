@@ -7,26 +7,31 @@
             type="com.konh.mycontract.model.DealModel" />
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:layout_gravity="center_vertical">
 
         <TextView
             android:id="@+id/deal_title"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:text="@{item.name}"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/deal_price"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@{String.valueOf(item.price)}"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/deal_delete"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="@string/done_button" />
 
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

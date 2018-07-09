@@ -82,4 +82,9 @@
     <string name="title_activity_history">History</string>
     <string name="zero">0</string>
     <string name="textview_day_scores_label">Scores/day</string>
+    <string name="add_deal_hint_title">Title</string>
+    <string name="add_deal_hint_price">Price</string>
+    <string name="add_deal_header">Add new deal:</string>
+    <string name="add_deal_ok_button">Add</string>
+    <string name="add_deal_cancel_button">Cancel</string>
 </resources>
