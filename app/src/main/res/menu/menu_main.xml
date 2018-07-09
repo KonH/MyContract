@@ -6,5 +6,15 @@
         android:id="@+id/action_add_deal"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/add_deal_button"
-        app:showAsAction="always" />
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/action_go_to_history"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/history_button"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/action_go_to_settings"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/settings_button"
+        app:showAsAction="withText" />
 </menu>

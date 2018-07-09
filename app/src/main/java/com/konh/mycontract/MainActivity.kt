@@ -1,5 +1,6 @@
 package com.konh.mycontract
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -76,6 +77,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.action_add_deal -> startCreatingDeal()
+            R.id.action_go_to_settings -> goToSettings()
+            R.id.action_go_to_history -> goToHistory()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -95,5 +98,13 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .create()
         dialog.show()
+    }
+
+    private fun goToSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
+    private fun goToHistory() {
+        startActivity(Intent(this, HistoryActivity::class.java))
     }
 }

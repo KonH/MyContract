@@ -11,7 +11,7 @@ import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.HistoryModel
 import com.konh.mycontract.utils.DateTimeConverter
 
-@Database(entities = [DealModel::class, HistoryModel::class], version = 1)
+@Database(entities = [DealModel::class, HistoryModel::class], version = 1, exportSchema = false)
 @TypeConverters(DateTimeConverter::class)
 abstract class DealDatabase : RoomDatabase() {
 
