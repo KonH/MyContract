@@ -18,6 +18,7 @@ import com.konh.mycontract.model.DateDealModel
 import com.konh.mycontract.model.ScoresModel
 import com.konh.mycontract.repository.RepositoryManager
 import com.konh.mycontract.utils.WorkerThread
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val workerThread = WorkerThread("dbThread")
@@ -37,7 +38,16 @@ class MainActivity : AppCompatActivity() {
         val dealListView = findViewById<ListView>(R.id.list_deals)
         dealListView?.adapter = dealAdapter
 
-        initRepository()
+        val day = extractConcreteDayFromIntent()
+        initRepository(day)
+    }
+
+    private fun extractConcreteDayFromIntent() : Calendar? {
+        val key = getString(R.string.concrete_day_arg)
+        if ((intent.extras != null) && intent.extras.containsKey(key)) {
+            return intent.extras[key] as Calendar
+        }
+        return null
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -87,10 +97,12 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, HistoryActivity::class.java))
     }
 
-    private fun initRepository() {
+    private fun initRepository(wantedDay:Calendar?) {
         val db = DealDatabase.getInstance(this)
         if ( db != null ) {
-            repo = RepositoryManager(db)
+            val day = wantedDay ?: Calendar.getInstance()
+            val isPastTime = wantedDay != null
+            repo = RepositoryManager(db, day, isPastTime)
             updateState()
         }
     }

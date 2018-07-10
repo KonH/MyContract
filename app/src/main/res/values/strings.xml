@@ -87,4 +87,5 @@
     <string name="add_deal_header">Add new deal:</string>
     <string name="add_deal_ok_button">Add</string>
     <string name="add_deal_cancel_button">Cancel</string>
+    <string name="concrete_day_arg">concrete_day</string>
 </resources>
