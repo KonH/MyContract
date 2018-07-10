@@ -1,33 +1,38 @@
 package com.konh.mycontract
 
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.InputType
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import com.konh.mycontract.adapter.DateDealAdapter
 import com.konh.mycontract.database.DealDatabase
+import com.konh.mycontract.databinding.ActivityMainBinding
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.DateDealModel
+import com.konh.mycontract.model.ScoresModel
 import com.konh.mycontract.repository.RepositoryManager
 import com.konh.mycontract.utils.WorkerThread
 
 class MainActivity : AppCompatActivity() {
-    private var workerThread = WorkerThread("dbThread")
-    private var dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
-    private lateinit var repo:RepositoryManager
+    private val workerThread = WorkerThread("dbThread")
+    private val dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
+
+    private lateinit var repo: RepositoryManager
+    private lateinit var mainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         workerThread.start()
+
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         val dealListView = findViewById<ListView>(R.id.list_deals)
         dealListView?.adapter = dealAdapter
@@ -86,14 +91,16 @@ class MainActivity : AppCompatActivity() {
         val db = DealDatabase.getInstance(this)
         if ( db != null ) {
             repo = RepositoryManager(db)
-            updateTodayDeals()
+            updateState()
         }
     }
 
-    private fun updateTodayDeals() {
+    private fun updateState() {
         workerThread.postTask(Runnable {
+           mainBinding.scores = repo.scores.getDayScores(repo.date.getCurrent())
             val dateDeals = repo.dateDeal.getAll()
             runOnUiThread {
+                mainBinding.executePendingBindings()
                 dealAdapter.updateItems(dateDeals)
             }
         })
@@ -102,14 +109,14 @@ class MainActivity : AppCompatActivity() {
     private fun addDeal(deal:DealModel) {
         workerThread.postTask(Runnable {
             repo.deal.addDeal(deal)
-            updateTodayDeals()
+            updateState()
         })
     }
 
     private fun doneDeal(deal:DateDealModel) {
         workerThread.postTask(Runnable {
             repo.dateDeal.doneDeal(deal)
-            updateTodayDeals()
+            updateState()
         })
     }
 }
