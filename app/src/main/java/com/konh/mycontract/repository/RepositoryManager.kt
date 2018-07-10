@@ -9,4 +9,5 @@ class RepositoryManager(db:DealDatabase) {
     val history = HistoryRepository(db.historyDao())
     val dateDeal = DateDealRepository(date, deal, history)
     val scores = ScoresRepository(history)
+    val historyAggregate = HistoryAggregateRepository(history)
 }
