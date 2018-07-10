@@ -1,9 +1,11 @@
 package com.konh.mycontract.repository
 
 import com.konh.mycontract.database.DealDatabase
+import java.util.*
 
-class RepositoryManager(private val db:DealDatabase) {
-    val deal:DealRepository = DealRepository(db.dealDao())
-    val history:HistoryRepository = HistoryRepository(db.historyDao())
-    val dateDeal:DateDealRepository = DateDealRepository(deal, history)
+class RepositoryManager(db:DealDatabase) {
+    val date = DateRepository(Calendar.getInstance())
+    val deal = DealRepository(db.dealDao())
+    val history = HistoryRepository(db.historyDao())
+    val dateDeal = DateDealRepository(date, deal, history)
 }

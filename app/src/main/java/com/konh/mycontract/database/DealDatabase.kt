@@ -9,10 +9,10 @@ import com.konh.mycontract.dao.DealDao
 import com.konh.mycontract.dao.HistoryDao
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.HistoryModel
-import com.konh.mycontract.utils.DateTimeConverter
+import com.konh.mycontract.utils.CalendarConverter
 
 @Database(entities = [DealModel::class, HistoryModel::class], version = 1, exportSchema = false)
-@TypeConverters(DateTimeConverter::class)
+@TypeConverters(CalendarConverter::class)
 abstract class DealDatabase : RoomDatabase() {
 
     abstract fun dealDao() : DealDao

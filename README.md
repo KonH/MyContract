@@ -1,5 +1,4 @@
-ToDo:
-
+In progress:
 - MainActivity
   - Current/selected day scores
   - Day score limit filler

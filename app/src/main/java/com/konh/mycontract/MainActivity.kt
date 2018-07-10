@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -15,30 +14,20 @@ import android.widget.Toast
 import com.konh.mycontract.adapter.DateDealAdapter
 import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.model.DealModel
-import com.konh.mycontract.model.HistoryModel
 import com.konh.mycontract.model.DateDealModel
-import com.konh.mycontract.repository.DateDealRepository
 import com.konh.mycontract.repository.RepositoryManager
 import com.konh.mycontract.utils.WorkerThread
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val logTag = "MainActivity"
-
-    private var workerThread: WorkerThread? = null
-
-    private var dealAdapter : DateDealAdapter? = null
-
-    private var repository:RepositoryManager? = null
+    private var workerThread = WorkerThread("dbThread")
+    private var dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
+    private lateinit var repo:RepositoryManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        workerThread = WorkerThread("dbThread")
-        workerThread?.start()
-
-        dealAdapter = DateDealAdapter(applicationContext, emptyList(), { doneDeal(it) })
+        workerThread.start()
 
         val dealListView = findViewById<ListView>(R.id.list_deals)
         dealListView?.adapter = dealAdapter
@@ -96,32 +85,30 @@ class MainActivity : AppCompatActivity() {
     private fun initRepository() {
         val db = DealDatabase.getInstance(this)
         if ( db != null ) {
-            repository = RepositoryManager(db)
+            repo = RepositoryManager(db)
             updateTodayDeals()
         }
     }
 
     private fun updateTodayDeals() {
-        workerThread?.postTask(Runnable {
-            val dateDeals = repository?.dateDeal?.getAll()
+        workerThread.postTask(Runnable {
+            val dateDeals = repo.dateDeal.getAll()
             runOnUiThread {
-                if ( dateDeals != null ) {
-                    dealAdapter?.updateItems(dateDeals)
-                }
+                dealAdapter.updateItems(dateDeals)
             }
         })
     }
 
     private fun addDeal(deal:DealModel) {
-        workerThread?.postTask(Runnable {
-            repository?.deal?.addDeal(deal)
+        workerThread.postTask(Runnable {
+            repo.deal.addDeal(deal)
             updateTodayDeals()
         })
     }
 
     private fun doneDeal(deal:DateDealModel) {
-        workerThread?.postTask(Runnable {
-            repository?.dateDeal?.doneDeal(deal)
+        workerThread.postTask(Runnable {
+            repo.dateDeal.doneDeal(deal)
             updateTodayDeals()
         })
     }

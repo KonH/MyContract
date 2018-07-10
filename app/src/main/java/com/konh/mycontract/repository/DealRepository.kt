@@ -4,15 +4,15 @@ import android.util.Log
 import com.konh.mycontract.dao.DealDao
 import com.konh.mycontract.model.DealModel
 
-class DealRepository(private val dealDao:DealDao) {
+class DealRepository(private val dao:DealDao) {
     private val logTag = "DealRepository"
 
     fun getAll():List<DealModel> {
-        return dealDao.getAll()
+        return dao.getAll()
     }
 
     fun addDeal(deal: DealModel) {
         Log.d(logTag, "addDeal: $deal")
-        dealDao.insert(deal)
+        dao.insert(deal)
     }
 }
