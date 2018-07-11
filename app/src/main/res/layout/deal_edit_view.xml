@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edit_deal_title"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="@string/add_deal_hint_title"
+        android:inputType="text"
+        android:textSize="30sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <EditText
+        android:id="@+id/edit_deal_price"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="@string/add_deal_hint_price"
+        android:inputType="number"
+        android:textSize="30sp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+</android.support.constraint.ConstraintLayout>

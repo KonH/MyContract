@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import com.konh.mycontract.adapter.DateDealAdapter
 import com.konh.mycontract.database.DealDatabase
@@ -68,23 +69,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCreatingDeal() {
-        val layout = LinearLayout(this)
-        val nameEditText = EditText(this)
-        nameEditText.hint = getString(R.string.add_deal_hint_title)
-        val priceEditText = EditText(this)
-        priceEditText.inputType = InputType.TYPE_CLASS_NUMBER
-        priceEditText.hint = getString(R.string.add_deal_hint_price)
-        layout.addView(nameEditText)
-        layout.addView(priceEditText)
-        val dialog = AlertDialog.Builder(this)
+        var dialog : AlertDialog? = null
+        dialog = AlertDialog.Builder(this)
                 .setTitle(getString(R.string.add_deal_header))
-                .setView(layout)
+                .setView(R.layout.deal_edit_view)
                 .setPositiveButton(getString(R.string.add_deal_ok_button), { _, _ ->
-                    val newDealText = nameEditText.text.toString()
-                    val newDealPrice = priceEditText.text.toString().toInt()
-                    val message = "New deal: '$newDealText'"
+                    val name = dialog?.findViewById<EditText>(R.id.edit_deal_title)?.text.toString()
+                    val price = dialog?.findViewById<EditText>(R.id.edit_deal_price)?.text.toString().toInt()
+                    val message = "New deal: '$name'"
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    val newDeal = DealModel(0, newDealText, newDealPrice )
+                    val newDeal = DealModel(0, name, price)
                     addDeal(newDeal)
                 })
                 .setNegativeButton(getString(R.string.add_deal_cancel_button), null)
