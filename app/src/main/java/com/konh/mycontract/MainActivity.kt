@@ -1,5 +1,6 @@
 package com.konh.mycontract
 
+import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.konh.mycontract.databinding.ActivityMainBinding
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.DateDealModel
 import com.konh.mycontract.repository.RepositoryManager
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -36,6 +38,11 @@ class MainActivity : AppCompatActivity() {
 
         val day = extractConcreteDayFromIntent()
         initRepository(day)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateState()
     }
 
     private fun extractConcreteDayFromIntent() : Calendar? {
@@ -98,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         if ( db != null ) {
             val day = wantedDay ?: Calendar.getInstance()
             val isPastTime = wantedDay != null
-            repo = RepositoryManager(db, day, isPastTime)
+            repo = RepositoryManager(db, day, isPastTime, getSharedPreferences(getString(R.string.file_settings_prefs), Context.MODE_PRIVATE))
             updateState()
         }
     }

@@ -88,4 +88,5 @@
     <string name="add_deal_ok_button">Add</string>
     <string name="add_deal_cancel_button">Cancel</string>
     <string name="concrete_day_arg">concrete_day</string>
+    <string name="file_settings_prefs">settings_prefs</string>
 </resources>

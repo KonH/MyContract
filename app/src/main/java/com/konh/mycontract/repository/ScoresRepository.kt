@@ -5,7 +5,7 @@ import com.konh.mycontract.model.ScoresModel
 import com.konh.mycontract.model.TotalScoresModel
 import java.util.*
 
-class ScoresRepository(private val history:HistoryRepository) {
+class ScoresRepository(private val history:HistoryRepository, private val settings:SettingsRepository) {
     private val logTag = "ScoresRepository"
 
     fun getTotalScores() : TotalScoresModel {
@@ -17,7 +17,8 @@ class ScoresRepository(private val history:HistoryRepository) {
 
     fun getDayScores(day: Calendar) : ScoresModel {
         val dayScores = history.getOnDay(day).sumBy { it.score }
-        val scores = ScoresModel(dayScores, 10) // TODO: set & read max scores
+        val maxScores = settings.get().dayScore
+        val scores = ScoresModel(dayScores, maxScores)
         Log.d(logTag, "getDayScores: $scores")
         return scores
     }

@@ -1,5 +1,6 @@
 package com.konh.mycontract
 
+import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +12,7 @@ import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.databinding.ActivityHistoryBinding
 import com.konh.mycontract.model.HistoryAggregateModel
 import com.konh.mycontract.repository.RepositoryManager
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -45,7 +47,7 @@ class HistoryActivity : AppCompatActivity() {
     private fun initRepository() {
         val db = DealDatabase.getInstance(this)
         if ( db != null ) {
-            repo = RepositoryManager(db, Calendar.getInstance(), false)
+            repo = RepositoryManager(db, Calendar.getInstance(), false, getSharedPreferences(getString(R.string.file_settings_prefs), Context.MODE_PRIVATE))
             updateState()
         }
     }
