@@ -11,11 +11,11 @@ import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.databinding.ActivityHistoryBinding
 import com.konh.mycontract.model.HistoryAggregateModel
 import com.konh.mycontract.repository.RepositoryManager
-import com.konh.mycontract.utils.WorkerThread
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 class HistoryActivity : AppCompatActivity() {
-    private val workerThread = WorkerThread("dbThread")
     private val historyAdapter = HistoryAggregateAdapter(this, emptyList(), { clickItem(it) })
 
     private lateinit var repo: RepositoryManager
@@ -24,8 +24,6 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
-
-        workerThread.start()
 
         historyBinding = DataBindingUtil.setContentView(this, R.layout.activity_history)
 
@@ -53,14 +51,14 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun updateState() {
-        workerThread.postTask(Runnable {
+        doAsync {
             historyBinding.scores = repo.scores.getTotalScores()
             val aggregates = repo.historyAggregate.getAll()
-            runOnUiThread {
+            uiThread {
                 historyBinding.executePendingBindings()
                 historyAdapter.updateItems(aggregates)
             }
-        })
+        }
     }
 
     private fun clickItem(item: HistoryAggregateModel) {

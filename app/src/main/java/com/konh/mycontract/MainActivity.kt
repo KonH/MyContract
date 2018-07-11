@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -15,13 +14,12 @@ import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.databinding.ActivityMainBinding
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.DateDealModel
-import com.konh.mycontract.model.ScoresModel
 import com.konh.mycontract.repository.RepositoryManager
-import com.konh.mycontract.utils.WorkerThread
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val workerThread = WorkerThread("dbThread")
     private val dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
 
     private lateinit var repo: RepositoryManager
@@ -30,8 +28,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        workerThread.start()
 
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
@@ -108,27 +104,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateState() {
-        workerThread.postTask(Runnable {
+        doAsync {
            mainBinding.scores = repo.scores.getDayScores(repo.date.getCurrent())
             val dateDeals = repo.dateDeal.getAll()
-            runOnUiThread {
+            uiThread {
                 mainBinding.executePendingBindings()
                 dealAdapter.updateItems(dateDeals)
             }
-        })
+        }
     }
 
     private fun addDeal(deal:DealModel) {
-        workerThread.postTask(Runnable {
+        doAsync {
             repo.deal.addDeal(deal)
             updateState()
-        })
+        }
     }
 
     private fun doneDeal(deal:DateDealModel) {
-        workerThread.postTask(Runnable {
+        doAsync {
             repo.dateDeal.doneDeal(deal)
             updateState()
-        })
+        }
     }
 }
