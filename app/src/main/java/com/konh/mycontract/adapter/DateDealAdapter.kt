@@ -26,7 +26,7 @@ class DateDealAdapter(private val context: Context, private var items:List<DateD
         }
         val item = getItem(position) as DateDealModel
         binding.item = item
-        binding.dealDone.setOnClickListener {
+        binding.root.setOnClickListener {
             doneHandler.invoke(item)
         }
         return binding.root

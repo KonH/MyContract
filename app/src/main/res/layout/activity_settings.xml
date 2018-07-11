@@ -23,7 +23,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/textview_day_scores_label" />
+                android:text="@string/textview_day_scores_label"
+                android:textAlignment="textEnd"
+                android:gravity="end"
+                android:textSize="20sp"
+                android:layout_margin="10dp"/>
 
             <EditText
                 android:id="@+id/day_scores_edit_text"
@@ -32,7 +36,11 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number"
-                android:text="@{String.valueOf(settings.dayScore)}" />
+                android:text="@{String.valueOf(settings.dayScore)}"
+                android:textAlignment="textStart"
+                android:gravity="start"
+                android:textSize="20sp"
+                android:layout_margin="10sp" />
 
         </LinearLayout>
 

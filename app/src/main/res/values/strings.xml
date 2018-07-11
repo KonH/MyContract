@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">My Contract</string>
     <string name="deal_sample">Deal</string>
-    <string name="done_button">Done</string>
     <string name="add_deal_button">Add Deal</string>
     <string name="history_button">History</string>
     <string name="settings_button">Settings</string>
@@ -81,7 +80,7 @@
     <string name="title_activity_deals">Deals</string>
     <string name="title_activity_history">History</string>
     <string name="zero">0</string>
-    <string name="textview_day_scores_label">Scores/day</string>
+    <string name="textview_day_scores_label">Scores/day:</string>
     <string name="add_deal_hint_title">Title</string>
     <string name="add_deal_hint_price">Price</string>
     <string name="add_deal_header">Add new deal:</string>
