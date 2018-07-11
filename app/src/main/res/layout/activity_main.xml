@@ -15,6 +15,13 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progress="@{scores.normalized}"
+            android:max="100" />
+
         <TextView
             android:id="@+id/text_view_current_scores"
             android:layout_width="match_parent"
