@@ -1,23 +1,20 @@
 package com.konh.mycontract
 
-import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.text.InputType
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Toast
 import com.konh.mycontract.adapter.DateDealAdapter
-import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.databinding.ActivityMainBinding
-import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.model.DateDealModel
-import com.konh.mycontract.repository.RepositoryManager
-import org.jetbrains.anko.defaultSharedPreferences
+import com.konh.mycontract.model.DealModel
+import com.konh.mycontract.repository.getRepo
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -25,7 +22,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private val dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
 
-    private lateinit var repo: RepositoryManager
     private lateinit var mainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         val day = extractConcreteDayFromIntent()
         initRepository(day)
+
+        updateState()
     }
 
     override fun onResume() {
@@ -95,37 +93,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRepository(wantedDay:Calendar?) {
-        val db = DealDatabase.getInstance(this)
-        if ( db != null ) {
-            val day = wantedDay ?: Calendar.getInstance()
-            val isPastTime = wantedDay != null
-            repo = RepositoryManager(db, day, isPastTime, getSharedPreferences(getString(R.string.file_settings_prefs), Context.MODE_PRIVATE))
-            updateState()
+        val repo = getRepo()
+        if ( repo != null ) {
+            if ( wantedDay != null ) {
+                repo.date.setCurrent(wantedDay)
+            } else {
+                repo.date.setToday()
+            }
         }
     }
 
     private fun updateState() {
         doAsync {
-           mainBinding.scores = repo.scores.getDayScores(repo.date.getCurrent())
-            val dateDeals = repo.dateDeal.getAll()
-            uiThread {
-                mainBinding.executePendingBindings()
-                dealAdapter.updateItems(dateDeals)
+            val repo = getRepo()
+            if ( repo != null ) {
+                mainBinding.scores = repo.scores.getDayScores(repo.date.getCurrent())
+                val dateDeals = repo.dateDeal.getAll()
+                uiThread {
+                    mainBinding.executePendingBindings()
+                    dealAdapter.updateItems(dateDeals)
+                }
             }
         }
     }
 
     private fun addDeal(deal:DealModel) {
         doAsync {
-            repo.deal.addDeal(deal)
-            updateState()
+            val repo = getRepo()
+            if ( repo != null ) {
+                repo.deal.addDeal(deal)
+                updateState()
+            }
         }
     }
 
     private fun doneDeal(deal:DateDealModel) {
         doAsync {
-            repo.dateDeal.doneDeal(deal)
-            updateState()
+            val repo = getRepo()
+            if ( repo != null ) {
+                repo.dateDeal.doneDeal(deal)
+                updateState()
+            }
         }
     }
 }

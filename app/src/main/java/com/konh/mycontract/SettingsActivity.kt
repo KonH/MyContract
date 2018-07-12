@@ -12,13 +12,13 @@ import com.konh.mycontract.database.DealDatabase
 import com.konh.mycontract.databinding.ActivitySettingsBinding
 import com.konh.mycontract.model.SettingsModel
 import com.konh.mycontract.repository.RepositoryManager
+import com.konh.mycontract.repository.getRepo
 import org.jetbrains.anko.defaultSharedPreferences
 import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
     private val logTag = "SettingsActivity"
 
-    private lateinit var repo: RepositoryManager
     private lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,27 +38,25 @@ class SettingsActivity : AppCompatActivity() {
             }
         })
 
-        initRepository()
-    }
-
-    private fun initRepository() {
-        val db = DealDatabase.getInstance(this)
-        if ( db != null ) {
-            repo = RepositoryManager(db, Calendar.getInstance(), false, getSharedPreferences(getString(R.string.file_settings_prefs), Context.MODE_PRIVATE))
-            updateState()
-        }
+        updateState()
     }
 
     private fun updateState() {
-        binding.settings = repo.settings.get()
-        binding.executePendingBindings()
+        val repo = getRepo()
+        if ( repo != null ) {
+            binding.settings = repo.settings.get()
+            binding.executePendingBindings()
+        }
     }
 
     private fun onDayScoresTextChanged(it:Editable) {
         try {
-            val newDayScores = it.toString().toInt()
-            repo.settings.update(SettingsModel(newDayScores))
-            updateState()
+            val repo = getRepo()
+            if ( repo != null ) {
+                val newDayScores = it.toString().toInt()
+                repo.settings.update(SettingsModel(newDayScores))
+                updateState()
+            }
         } catch (e:Exception) {
             Log.e(logTag, "onDayScoresTextChanged: $e")
         }
