@@ -20,7 +20,7 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val dealAdapter = DateDealAdapter(this, emptyList(), { doneDeal(it) })
+    private val dealAdapter = DateDealAdapter(this, emptyList(), { tryDoneDeal(it) })
 
     private lateinit var mainBinding: ActivityMainBinding
 
@@ -127,7 +127,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun doneDeal(deal:DateDealModel) {
+    private fun tryDoneDeal(deal:DateDealModel) {
+        if ( !deal.interactable ) {
+            return
+        }
         doAsync {
             val repo = getRepo()
             if ( repo != null ) {
