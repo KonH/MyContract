@@ -10,7 +10,8 @@ class DateRepository {
     private var today:Calendar = Calendar.getInstance()
     private var day:Calendar = today
 
-    var isPastTime:Boolean = day != today
+    val isPastTime: Boolean
+        get() = day != today
 
     fun getCurrent() : Calendar {
         Log.d(logTag, "getCurrent: ${calendarToString(day)}")
