@@ -1,7 +1,7 @@
 package com.konh.mycontract.model
 
-import kotlin.math.min
+import com.konh.mycontract.utils.getNormalized
 
 data class ScoresModel(val current:Int, val max:Int) {
-    val normalized = ((min(current, max).toFloat() / max) * 100).toInt()
+    val normalized = getNormalized(this)
 }

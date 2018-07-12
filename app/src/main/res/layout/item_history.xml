@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -23,6 +24,14 @@
             android:textAlignment="textStart"
             android:layout_gravity="start"/>
 
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="3"
+            android:max="100"
+            android:progress="@{item.normalized}" />
+
         <TextView
             android:id="@+id/history_score"
             android:layout_width="0dp"
@@ -30,7 +39,7 @@
             android:layout_gravity="end"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="@{String.valueOf(item.score)}"
+            android:text="@{String.valueOf(item.curScore)}"
             android:textAlignment="textEnd"
             android:textSize="30sp" />
 
