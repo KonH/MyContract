@@ -20,7 +20,7 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val dealAdapter = DateDealAdapter(this, emptyList(), { tryDoneDeal(it) })
+    private val dealAdapter = DateDealAdapter(this, emptyList(), clickHandler = { tryDoneDeal(it) }, longClickHandler = { editDeal(it) })
 
     private lateinit var mainBinding: ActivityMainBinding
 
@@ -59,29 +59,55 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.action_add_deal -> startCreatingDeal()
+            R.id.action_add_deal -> showAddDealDialog()
             R.id.action_go_to_settings -> goToSettings()
             R.id.action_go_to_history -> goToHistory()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun startCreatingDeal() {
+    private fun showDealDialogCommon(header:String, positive:String, negative:String, id:Int, name:String, price:String, onPositive:(DealModel)->Unit, onNegative:()->Unit) {
         var dialog : AlertDialog? = null
+        var nameView : EditText? = null
+        var priceView : EditText? = null
         dialog = AlertDialog.Builder(this)
-                .setTitle(getString(R.string.add_deal_header))
+                .setTitle(header)
                 .setView(R.layout.deal_edit_view)
-                .setPositiveButton(getString(R.string.add_deal_ok_button), { _, _ ->
-                    val name = dialog?.findViewById<EditText>(R.id.edit_deal_title)?.text.toString()
-                    val price = dialog?.findViewById<EditText>(R.id.edit_deal_price)?.text.toString().toInt()
-                    val message = "New deal: '$name'"
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    val newDeal = DealModel(0, name, price)
-                    addDeal(newDeal)
+                .setPositiveButton(positive, { _, _ ->
+                    val model = DealModel(
+                            id,
+                            nameView?.text.toString(),
+                            priceView?.text.toString().toInt()
+                    )
+                    onPositive.invoke(model)
                 })
-                .setNegativeButton(getString(R.string.add_deal_cancel_button), null)
+                .setNegativeButton(negative, {_, _ ->
+                    onNegative.invoke()
+                })
                 .create()
         dialog.show()
+        nameView = dialog.findViewById(R.id.edit_deal_title)
+        priceView = dialog.findViewById(R.id.edit_deal_price)
+        nameView?.setText(name)
+        priceView?.setText(price)
+    }
+
+    private fun showAddDealDialog() {
+        showDealDialogCommon(
+                getString(R.string.edit_deal_header),
+                getString(R.string.edit_deal_confirm_button),
+                getString(R.string.edit_deal_delete_button),
+                0, "", "",
+                { addDeal(it) }, { })
+    }
+
+    private fun shoeEditDealDialog(model:DealModel) {
+        showDealDialogCommon(
+                getString(R.string.edit_deal_header),
+                getString(R.string.edit_deal_confirm_button),
+                getString(R.string.edit_deal_delete_button),
+                model.id, model.name, model.score.toString(),
+                { updateDeal(it) }, { deleteDeal(model) })
     }
 
     private fun goToSettings() {
@@ -118,6 +144,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addDeal(deal:DealModel) {
+        val message = "New deal: '${deal.name}'"
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         doAsync {
             val repo = getRepo()
             if ( repo != null ) {
@@ -135,6 +163,32 @@ class MainActivity : AppCompatActivity() {
             val repo = getRepo()
             if ( repo != null ) {
                 repo.dateDeal.doneDeal(deal)
+                updateState()
+            }
+        }
+    }
+
+    private fun editDeal(dateDeal:DateDealModel) : Boolean {
+        val deal = DealModel(dateDeal.dealId, dateDeal.name, dateDeal.score)
+        shoeEditDealDialog(deal)
+        return true
+    }
+
+    private fun updateDeal(deal:DealModel) {
+        val repo = getRepo()
+        if ( repo != null ) {
+            doAsync {
+                repo.deal.updateDeal(deal)
+                updateState()
+            }
+        }
+    }
+
+    private fun deleteDeal(deal: DealModel) {
+        val repo = getRepo()
+        if ( repo != null ) {
+            doAsync {
+                repo.deal.deleteDeal(deal)
                 updateState()
             }
         }

@@ -15,4 +15,14 @@ class DealRepository(private val dao:DealDao) {
         Log.d(logTag, "addDeal: $deal")
         dao.insert(deal)
     }
+
+    fun updateDeal(deal : DealModel) {
+        Log.d(logTag, "updateDeal: $deal")
+        dao.update(deal)
+    }
+
+    fun deleteDeal(deal : DealModel) {
+        Log.d(logTag, "deleteDeal: $deal")
+        dao.delete(deal)
+    }
 }

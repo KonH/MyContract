@@ -1,8 +1,6 @@
 package com.konh.mycontract.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.konh.mycontract.model.DealModel
 
 @Dao
@@ -12,5 +10,11 @@ interface DealDao {
 
     @Insert()
     fun insert(model : DealModel)
+
+    @Update()
+    fun update(model : DealModel)
+
+    @Delete()
+    fun delete(model : DealModel)
 
 }

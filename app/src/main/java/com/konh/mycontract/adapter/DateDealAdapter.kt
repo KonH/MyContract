@@ -8,7 +8,11 @@ import android.widget.BaseAdapter
 import com.konh.mycontract.databinding.ItemDealBinding
 import com.konh.mycontract.model.DateDealModel
 
-class DateDealAdapter(private val context: Context, private var items:List<DateDealModel>, private val doneHandler:(DateDealModel)->Unit) : BaseAdapter() {
+class DateDealAdapter(
+        private val context: Context,
+        private var items:List<DateDealModel>,
+        private val clickHandler:(DateDealModel)->Unit,
+        private val longClickHandler: (DateDealModel)->Boolean) : BaseAdapter() {
 
     override fun getCount(): Int = items.size
 
@@ -27,7 +31,10 @@ class DateDealAdapter(private val context: Context, private var items:List<DateD
         val item = getItem(position) as DateDealModel
         binding.item = item
         binding.root.setOnClickListener {
-            doneHandler.invoke(item)
+            clickHandler.invoke(item)
+        }
+        binding.root.setOnLongClickListener {
+            longClickHandler.invoke(item)
         }
         return binding.root
     }
