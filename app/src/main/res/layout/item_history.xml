@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/history_title"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_margin="5dp"
             android:layout_weight="4"
             android:text="@{item.dayStr}"
@@ -27,7 +27,7 @@
         <ProgressBar
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_weight="3"
             android:max="100"
             android:progress="@{item.normalized}" />
@@ -35,7 +35,7 @@
         <TextView
             android:id="@+id/history_score"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_gravity="end"
             android:layout_margin="5dp"
             android:layout_weight="1"

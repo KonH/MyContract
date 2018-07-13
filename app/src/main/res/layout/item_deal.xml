@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/deal_title"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_margin="5dp"
             android:layout_weight="4"
             android:text="@{item.name}"
@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/deal_price"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_gravity="end"
             android:layout_margin="5dp"
             android:layout_weight="1"
