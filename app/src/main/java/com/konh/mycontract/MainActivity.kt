@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -20,6 +21,8 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    private val logTag = "MainActivity"
+
     private val dealAdapter = DateDealAdapter(this, emptyList(), clickHandler = { tryDoneDeal(it) }, longClickHandler = { editDeal(it) })
 
     private lateinit var mainBinding: ActivityMainBinding
@@ -74,12 +77,16 @@ class MainActivity : AppCompatActivity() {
                 .setTitle(header)
                 .setView(R.layout.deal_edit_view)
                 .setPositiveButton(positive, { _, _ ->
-                    val model = DealModel(
-                            id,
-                            nameView?.text.toString(),
-                            priceView?.text.toString().toInt()
-                    )
-                    onPositive.invoke(model)
+                    try {
+                        val model = DealModel(
+                                id,
+                                nameView?.text.toString(),
+                                priceView?.text.toString().toInt()
+                        )
+                        onPositive.invoke(model)
+                    } catch (e:Exception) {
+                        Log.e(logTag, "showDealDialogCommon: $e")
+                    }
                 })
                 .setNegativeButton(negative, {_, _ ->
                     onNegative.invoke()
@@ -94,9 +101,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAddDealDialog() {
         showDealDialogCommon(
-                getString(R.string.edit_deal_header),
-                getString(R.string.edit_deal_confirm_button),
-                getString(R.string.edit_deal_delete_button),
+                getString(R.string.add_deal_header),
+                getString(R.string.add_deal_ok_button),
+                getString(R.string.add_deal_cancel_button),
                 0, "", "",
                 { addDeal(it) }, { })
     }

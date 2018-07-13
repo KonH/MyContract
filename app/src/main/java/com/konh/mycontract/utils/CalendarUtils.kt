@@ -14,10 +14,11 @@ fun calendarToStringShort(date: Calendar) : String {
 }
 
 fun resetToDayStart(day: Calendar) : Calendar {
-    val startDay = (day.clone() as Calendar)
-    startDay.set(Calendar.HOUR, 0)
-    startDay.set(Calendar.MINUTE, 0)
-    startDay.set(Calendar.SECOND, 0)
+    val year = day.get(Calendar.YEAR)
+    val month = day.get(Calendar.MONTH)
+    val day = day.get(Calendar.DATE)
+    val startDay = Calendar.getInstance()
+    startDay.set(year, month, day, 0, 0, 0)
     startDay.set(Calendar.MILLISECOND, 0)
     return startDay
 }
