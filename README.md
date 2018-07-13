@@ -1,14 +1,16 @@
-In progress:
-- MainActivity
-  - Current/selected day scores
-  - Day score limit filler
-  - All done deals
-  - All deals which can be done
-  - Settings menu button
-  - History menu button (to HistoryActivity)
-  - Add deal button
-- SettingsActivity
-  - Day score limit settings
-- HistoryActivity
-  - Total scores
-  - All day results with fillers (to MainActivity)
+# My Contract
+
+## Summary
+
+It is self-motivation app with gamification features for Android. You can add your daily deals and mark it done every day. Each deal have price in abstract "score" and you can set your own limit for day. History for all days is included. For this app you can grow up good habits and get better your personal efficiency. 
+
+## Tech
+
+- Kotlin as language
+- Android Data Binding for data representation
+- SQLite as database
+- Room for database management
+
+## Screenshots
+
+// TODO: Screens
