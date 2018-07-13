@@ -13,4 +13,4 @@ It is self-motivation app with gamification features for Android. You can add yo
 
 ## Screenshots
 
-// TODO: Screens
+<img src="https://github.com/KonH/MyContract/blob/master/screens/main.png?raw=true" width=300> <img src="https://github.com/KonH/MyContract/blob/master/screens/add.png?raw=true" width=300> <img src="https://github.com/KonH/MyContract/blob/master/screens/history.png?raw=true" width=300> <img src="https://github.com/KonH/MyContract/blob/master/screens/context.png?raw=true" width=300> <img src="https://github.com/KonH/MyContract/blob/master/screens/edit.png?raw=true" width=300> <img src="https://github.com/KonH/MyContract/blob/master/screens/settings.png?raw=true" width=300>
