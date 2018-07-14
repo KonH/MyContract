@@ -1,6 +1,5 @@
 package com.konh.mycontract
 
-import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -17,6 +16,7 @@ import com.konh.mycontract.model.DateDealModel
 import com.konh.mycontract.model.DealModel
 import com.konh.mycontract.repository.getRepo
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
 import java.util.*
 
@@ -70,10 +70,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDealDialogCommon(header:String, positive:String, negative:String, id:Int, name:String, price:String, onPositive:(DealModel)->Unit, onNegative:()->Unit) {
-        var dialog : AlertDialog? = null
         var nameView : EditText? = null
         var priceView : EditText? = null
-        dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
                 .setTitle(header)
                 .setView(R.layout.deal_edit_view)
                 .setPositiveButton(positive, { _, _ ->
@@ -83,13 +82,13 @@ class MainActivity : AppCompatActivity() {
                                 nameView?.text.toString(),
                                 priceView?.text.toString().toInt()
                         )
-                        onPositive.invoke(model)
+                        onPositive(model)
                     } catch (e:Exception) {
                         Log.e(logTag, "showDealDialogCommon: $e")
                     }
                 })
                 .setNegativeButton(negative, {_, _ ->
-                    onNegative.invoke()
+                    onNegative()
                 })
                 .create()
         dialog.show()
@@ -118,11 +117,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java))
+        startActivity<SettingsActivity>()
     }
 
     private fun goToHistory() {
-        startActivity(Intent(this, HistoryActivity::class.java))
+        startActivity<HistoryActivity>()
     }
 
     private fun initRepository(wantedDay:Calendar?) {

@@ -1,6 +1,5 @@
 package com.konh.mycontract
 
-import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +10,7 @@ import com.konh.mycontract.databinding.ActivityHistoryBinding
 import com.konh.mycontract.model.HistoryAggregateModel
 import com.konh.mycontract.repository.getRepo
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
 import java.util.*
 
@@ -59,8 +59,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity(day:Calendar) {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(getString(R.string.concrete_day_arg), day)
-        startActivity(intent)
+        startActivity<MainActivity>(Pair(getString(R.string.concrete_day_arg), day))
     }
 }
