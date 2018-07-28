@@ -15,10 +15,12 @@ class DateDealRepository(private val dateRepo:DateRepository, private val dealRe
         Log.d(logTag, "getAll: deals: ${deals.size}, history: ${history.size}")
         deals.forEach { Log.d(logTag, "getAll: deal: $it") }
         history.forEach { Log.d(logTag, "getAll: history: $it") }
-        val dateDeals = deals
+        val dateDeals = history.map { createFromHistory(it) }.toMutableList()
+        if ( !dateRepo.isPastTime ) {
+            dateDeals.addAll(deals
                     .filter { d -> !history.any { h -> h.dealId == d.id } }
-                    .map { createFromDeal(it) }.toMutableList()
-            dateDeals.addAll(history.map { createFromHistory(it) })
+                    .map { createFromDeal(it) }.toMutableList())
+        }
         return dateDeals
     }
 
