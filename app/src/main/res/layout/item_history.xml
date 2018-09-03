@@ -20,7 +20,7 @@
             android:layout_margin="5dp"
             android:layout_weight="4"
             android:text="@{item.dayStr}"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:textAlignment="textStart"
             android:layout_gravity="start"/>
 
